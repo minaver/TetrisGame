@@ -49,6 +49,10 @@ public class Form {
 		case "z":
 			color = Color.HOTPINK;
 			break;
+		case "i":
+			color = Color.SANDYBROWN;
+			break;
+
 	}
 	
 	this.a.setFill(color);
