@@ -25,12 +25,12 @@ public class Tetris extends Application {
 	public static int YMAX = SIZE * 24;
 	public static int[][] MESH = new int[XMAX / SIZE][YMAX / SIZE];
 	private static Pane group = new Pane();
-	private static Form object;
+	private static Form object;	
 	private static Scene scene = new Scene(group, XMAX + 150, YMAX);
 	public static int score = 0;
 	private static int top = 0;
 	private static boolean game = true;
-	private static Form nextObj = Controller.makeRect();
+	private static Form nextObj = Controller.makeRect(); // makeRect() return Form instance
 	private static int linesNo = 0;
 
 	public static void main(String[] args) {
@@ -45,38 +45,43 @@ public class Tetris extends Application {
 		}
 
 		Line line = new Line(XMAX, 0, XMAX, YMAX);
+		
 		Text scoretext = new Text("Score: ");
 		scoretext.setStyle("-fx-font: 20 arial;");
 		scoretext.setY(50);
 		scoretext.setX(XMAX + 5);
+		
 		Text level = new Text("Lines: ");
 		level.setStyle("-fx-font: 20 arial;");
 		level.setY(100);
 		level.setX(XMAX + 5);
 		level.setFill(Color.GREEN);
+		
 		group.getChildren().addAll(scoretext, line, level);
-
+		
+		// create first block and the stage
 		Form a = nextObj;
 		group.getChildren().addAll(a.a, a.b, a.c, a.d);
 		moveOnKeyPress(a);
-		object = a;
-		nextObj = Controller.makeRect();
+		object = a; // first block
+		nextObj = Controller.makeRect(); // create next block not yet seen
+		
 		stage.setScene(scene);
 		stage.setTitle("T E T R I S");
 		stage.show();
 
 		Timer fall = new Timer();
 		TimerTask task = new TimerTask() {
-			public void run() {
+			public void run() { // TimerTask 가 실행할 run
 				Platform.runLater(new Runnable() {
-					public void run() {
+					public void run() {	// Platform.runLater로 새로 생성된 스레드가 실행할 run (UI 생성, 변경 코드)
 						if (object.a.getY() == 0 || object.b.getY() == 0 || object.c.getY() == 0
 								|| object.d.getY() == 0)
 							top++;
 						else
 							top = 0;
 
-						if (top == 2) {
+						if (top == 2) { // 처음에는 무조건 1인 나오니 2번 반복되는 경우에는 위에 닿았다고 판단? 
 							// GAME OVER
 							Text over = new Text("GAME OVER");
 							over.setFill(Color.RED);
@@ -84,6 +89,7 @@ public class Tetris extends Application {
 							over.setY(250);
 							over.setX(10);
 							group.getChildren().add(over);
+							
 							game = false;
 						}
 						// Exit
@@ -91,7 +97,7 @@ public class Tetris extends Application {
 							System.exit(0);
 						}
 
-						if (game) {
+						if (game) { // if game == true
 							MoveDown(object);
 							scoretext.setText("Score: " + Integer.toString(score));
 							level.setText("Lines: " + Integer.toString(linesNo));
@@ -100,6 +106,7 @@ public class Tetris extends Application {
 				});
 			}
 		};
+		
 		fall.schedule(task, 0, 300); 
 	}
 
